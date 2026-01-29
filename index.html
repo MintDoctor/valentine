@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine?</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 50%, #ff9a9e 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            padding: 30px 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            /* Smooth premium transition for container resizing */
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        h1 {
+            color: #e74c3c;
+            font-size: clamp(1.5rem, 5vw, 2.2rem);
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+            /* Smooth transition for any text changes */
+            transition: all 0.3s ease-in-out;
+        }
+
+        .meme-container {
+            width: 100%;
+            max-width: 300px;
+            height: 250px;
+            margin: 0 auto 25px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+            /* Premium smooth transition */
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .meme-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            /* Smooth fade transition for meme image changes */
+            transition: opacity 0.3s ease-in-out;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            /* Min-height ensures container grows smoothly as Yes button scales */
+            min-height: 60px;
+            /* Smooth transition for the button container including gap */
+            transition: min-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                        gap 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 10px 5px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-family: 'Georgia', serif;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            /* Premium smooth transition for all button states */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: bold;
+        }
+
+        .yes-btn {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(17, 153, 142, 0.4);
+        }
+
+        .yes-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.5);
+        }
+
+        .no-btn {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(235, 51, 73, 0.4);
+        }
+
+        .no-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(235, 51, 73, 0.5);
+        }
+
+        /* Celebration styles - animation handled by keyframes below */
+
+        .celebration h1 {
+            color: #e74c3c;
+            font-size: clamp(1.8rem, 6vw, 2.5rem);
+            margin-bottom: 10px;
+        }
+
+        .celebration .subtitle {
+            color: #ff6b6b;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            margin-bottom: 25px;
+        }
+
+        .date-details {
+            background: linear-gradient(135deg, #fff5f5 0%, #ffe0e0 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-top: 25px;
+            border: 2px dashed #ff9a9e;
+        }
+
+        .date-details h2 {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            font-size: clamp(1.2rem, 4vw, 1.5rem);
+        }
+
+        .date-details p {
+            color: #555;
+            font-size: clamp(1rem, 3vw, 1.2rem);
+            margin: 12px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .date-details .icon {
+            font-size: 1.4rem;
+        }
+
+        .hearts {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .heart {
+            position: absolute;
+            font-size: 20px;
+            animation: fall linear infinite;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            0% {
+                transform: translateY(-100px) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Celebration container gets a smooth entrance */
+        .celebration {
+            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        /* Playful wiggle animation for the No button - adds humor when clicked */
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            20% { transform: rotate(-8deg); }
+            40% { transform: rotate(8deg); }
+            60% { transform: rotate(-5deg); }
+            80% { transform: rotate(5deg); }
+        }
+
+        .wiggle {
+            animation: wiggle 0.5s ease-in-out;
+        }
+
+        /* Bouncy grow animation for Yes button - uses padding for actual layout growth */
+        @keyframes bounceGrow {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+            75% { transform: scale(0.97); }
+            100% { transform: scale(1); }
+        }
+
+        .bounce-grow {
+            animation: bounceGrow 0.35s ease-in-out;
+        }
+
+        /* Mobile adjustments - optimized for smaller screens */
+        @media (max-width: 480px) {
+            body {
+                padding: 15px;
+            }
+
+            .container {
+                padding: 20px 15px;
+                border-radius: 16px;
+            }
+
+            h1 {
+                font-size: clamp(1.3rem, 5vw, 1.8rem);
+                margin-bottom: 15px;
+            }
+
+            .meme-container {
+                height: 180px;
+                max-width: 260px;
+                margin-bottom: 20px;
+            }
+
+            button {
+                padding: 10px 22px;
+                font-size: 0.95rem;
+            }
+
+            .buttons {
+                gap: 12px;
+                min-height: 50px;
+                padding: 8px 5px;
+            }
+
+            .date-details {
+                padding: 18px 15px;
+            }
+
+            .date-details h2 {
+                font-size: 1.1rem;
+                margin-bottom: 15px;
+            }
+
+            .date-details p {
+                font-size: 0.95rem;
+                margin: 10px 0;
+            }
+        }
+
+        /* Extra small screens */
+        @media (max-width: 350px) {
+            .container {
+                padding: 15px 12px;
+            }
+
+            h1 {
+                font-size: 1.2rem;
+            }
+
+            .meme-container {
+                height: 160px;
+                max-width: 220px;
+            }
+
+            button {
+                padding: 8px 18px;
+                font-size: 0.9rem;
+            }
+
+            .buttons {
+                gap: 8px;
+                min-height: 45px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hearts" id="hearts"></div>
+
+    <div class="container" id="main-container">
+        <h1>Will you be my Valentine?</h1>
+
+        <div class="meme-container">
+            <img id="meme-image" src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDd4Y3BxNzVzYnE0OWVxY3V5bXBhNmE5OXZ2cHh0YjBhNWFyYnJzayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKoWXm3okO1kgHC/giphy.gif" alt="Cute meme">
+        </div>
+
+        <div class="buttons">
+            <button class="yes-btn" id="yes-btn" onclick="sayYes()">Yes</button>
+            <button class="no-btn" id="no-btn" onclick="sayNo()">No</button>
+        </div>
+    </div>
+
+    <script>
+        // Counter for "No" clicks
+        let noClickCount = 0;
+
+        // Array of persuasion messages for the No button
+        const noMessages = [
+            "No",
+            "Are you sure?",
+            "Really sure?",
+            "Think again!",
+            "Pretty please?",
+            "With a cherry on top?",
+            "I'll be sad...",
+            "You're breaking my heart!",
+            "I'm gonna cry...",
+            "Give me a chance!",
+            "Don't do this to me!",
+            "You're making me blush...",
+            "Fine, I'll ask nicer...",
+            "Please? For me?",
+            "I'll make it worth it!",
+            "Last chance...",
+            "OK fine... just kidding!",
+            "Still no?!",
+            "Impossible!",
+            "My heart can't take this!"
+        ];
+
+        // Array of meme image URLs
+        const memeImages = [
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcDd4Y3BxNzVzYnE0OWVxY3V5bXBhNmE5OXZ2cHh0YjBhNWFyYnJzayZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3o7TKoWXm3okO1kgHC/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnBtOWFpY2xmZnI2NjV1OHJhOGh6dXo3NXE2NXRxaXFqcHF6NzViZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0HlPwMAzh13pcZ20/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjdzMnVtYnBmZzRxNjVxbWQxZXF5OWJuMHRubXBqMnBzNXBiYThkZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xT0xeMA62E1XIlup68/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExOXNiOXViYnBsYjBsOGN4OXM5bXBzcmVsNWxoMTh3bXJyZzF6YXJtbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/26FLdmIp6wJr91JAI/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExc3p0Z2Zyb2huaGx3cWtkbGVycjJ5bW9nYWtyeWFrMHVmaHlhbzM2dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/3oEjI4sFlp73fvEYgw/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdHAwcnBhbmtpYjBqYTVjYTIzY3A0OHQwaHlrNDQ5dDFwbzh0YXZ4bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l4pTdcifPZLpDjL1e/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExeHhiYjF6Z3Y0eGVhZ3hqY3E4NXN0cXh0MWM2aXZ6YXJyY2ltYmw3eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/UVk5yzljef0kGiayL1/giphy.gif",
+            "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdm9jc24xenNha3NzYWx5dHJoNGdhNWk0M3ZyMG5lNXVnbHZ5aWh5YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/M90mJvfWfd5mbUuULX/giphy.gif"
+        ];
+
+        // Celebration meme
+        const celebrationMeme = "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExdjV3c3Z3NWY0M2x2OHp4MGlhdGhpeHk2NHpyY2JheXhwMHA2MTJ4ZCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l0MYt5jPR6QX5pnqM/giphy.gif";
+
+        // DOM elements
+        const yesBtn = document.getElementById('yes-btn');
+        const noBtn = document.getElementById('no-btn');
+        const memeImage = document.getElementById('meme-image');
+        const container = document.getElementById('main-container');
+
+        // Reference to buttons container for dynamic resizing
+        const buttonsContainer = document.querySelector('.buttons');
+
+        function sayNo() {
+            noClickCount++;
+
+            // Use actual padding/font increases instead of transform scale
+            // This ensures the button takes up real layout space and won't overlap
+            const basePaddingV = 12;
+            const basePaddingH = 30;
+            const baseFontSize = 1.1;
+
+            // Incremental growth per click (capped for sanity)
+            const paddingGrowth = Math.min(noClickCount * 4, 40);
+            const fontGrowth = Math.min(noClickCount * 0.12, 1.2);
+
+            const newPaddingV = basePaddingV + paddingGrowth;
+            const newPaddingH = basePaddingH + (paddingGrowth * 1.5);
+            const newFontSize = baseFontSize + fontGrowth;
+
+            // Apply real size changes (these affect layout, preventing overlap)
+            yesBtn.style.padding = `${newPaddingV}px ${newPaddingH}px`;
+            yesBtn.style.fontSize = `${newFontSize}rem`;
+
+            // Apply bouncy animation for humor (temporary visual effect only)
+            yesBtn.classList.remove('bounce-grow');
+            void yesBtn.offsetWidth; // Trigger reflow to restart animation
+            yesBtn.classList.add('bounce-grow');
+
+            // Increase gap between buttons as Yes button grows
+            const newGap = 15 + (noClickCount * 8);
+            buttonsContainer.style.gap = `${Math.min(newGap, 60)}px`;
+
+            // Grow container padding to give buttons room
+            const containerPadding = 10 + (noClickCount * 5);
+            buttonsContainer.style.padding = `${Math.min(containerPadding, 40)}px 5px`;
+
+            // Add wiggle animation to No button for playful humor
+            noBtn.classList.remove('wiggle');
+            void noBtn.offsetWidth; // Trigger reflow to restart animation
+            noBtn.classList.add('wiggle');
+
+            // Change No button text (cycle through messages)
+            const messageIndex = noClickCount % noMessages.length;
+            noBtn.textContent = noMessages[messageIndex];
+
+            // Change meme image with smooth fade (cycle through images)
+            const imageIndex = noClickCount % memeImages.length;
+            memeImage.style.opacity = '0';
+            setTimeout(() => {
+                memeImage.src = memeImages[imageIndex];
+                memeImage.style.opacity = '1';
+            }, 250);
+        }
+
+        function sayYes() {
+            // Create falling hearts
+            createHearts();
+
+            // Replace UI with celebration
+            container.innerHTML = `
+                <div class="celebration">
+                    <h1>Yay! You said YES!</h1>
+                    <p class="subtitle">I'm the happiest person in the world!</p>
+
+                    <div class="meme-container pulse">
+                        <img src="${celebrationMeme}" alt="Celebration">
+                    </div>
+
+                    <div class="date-details">
+                        <h2>Our Valentine's Date</h2>
+                        <p><span class="icon">📅</span> February 14th, 2025</p>
+                        <p><span class="icon">🕖</span> 6:00 PM</p>
+                        <p><span class="icon">📍</span> The Sig Restaurant, Lagos</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createHearts() {
+            const heartsContainer = document.getElementById('hearts');
+            const heartEmojis = ['❤️', '💕', '💖', '💗', '💓', '💘', '💝'];
+
+            for (let i = 0; i < 30; i++) {
+                setTimeout(() => {
+                    const heart = document.createElement('div');
+                    heart.className = 'heart';
+                    heart.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+                    heart.style.left = Math.random() * 100 + 'vw';
+                    heart.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    heartsContainer.appendChild(heart);
+
+                    // Remove heart after animation
+                    setTimeout(() => {
+                        heart.remove();
+                    }, 5000);
+                }, i * 100);
+            }
+        }
+    </script>
+</body>
+</html>
